@@ -1,5 +1,5 @@
-# Private Bucket and Lambda
+# bucketlambda
 
 This project creates:
-- Private bucket consumed by a Lambda function;
-- Lambda
+- Lambda function;
+- Private bucket;

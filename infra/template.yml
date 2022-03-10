@@ -1,16 +1,15 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Creates a private bucket and a Lambda
+Description: Creates a Lambda function that consumes a private bucket
 
 Parameters:
-
   BucketName:
     Type: String
     Default: tg-private-bucket-123456
 
   FunctionName:
     Type: String
-    Default: IntegrationLambdaS3
+    Default: BucketLambda
 
   BucketLambdaSourceCode:
     Type: String
@@ -18,14 +17,13 @@ Parameters:
 
   BucketKeyLambdaSourceCode:
     Type: String
-    Default: IntegrationLambdaS3.zip
-  
+    Default: BucketLambda.zip
+
   Owner:
     Type: String
     Default: tg
 
 Resources:
-
   Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -44,27 +42,27 @@ Resources:
     Properties:
       RoleName: !Sub ${FunctionName}ExecutionRole
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: "/"
       Policies:
-      - PolicyName: !Sub ${FunctionName}ExecutionRolePolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: Allow
-            Action:
-              - logs:*
-              - s3:putObject
-              - s3:GetObject
-              - s3:ListBucket
-            Resource: !Sub "arn:aws:s3:::${BucketName}"
+        - PolicyName: !Sub ${FunctionName}ExecutionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:*
+                  - s3:putObject
+                  - s3:GetObject
+                  - s3:ListBucket
+                Resource: !Sub "arn:aws:s3:::${BucketName}"
 
   Lambda:
     Type: AWS::Lambda::Function
